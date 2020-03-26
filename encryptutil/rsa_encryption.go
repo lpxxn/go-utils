@@ -13,37 +13,28 @@ import (
 )
 
 func EncryptOAEP(secretMessage string, publicKey *rsa.PublicKey) (string, error) {
-	//label := []byte("OAEP Encrypted")
-	// crypto/rand.Reader is a good source of entropy for randomizing the
-	// encryption function.
 	rng := rand.Reader
-	ciphertext, err := rsa.EncryptOAEP(sha256.New(), rng, publicKey, []byte(secretMessage), nil)
+	cipherText, err := rsa.EncryptOAEP(sha256.New(), rng, publicKey, []byte(secretMessage), nil)
 	if err != nil {
 		return "", err
 	}
-	return base64.StdEncoding.EncodeToString(ciphertext), nil
+	return base64.StdEncoding.EncodeToString(cipherText), nil
 }
 
 func DecryptOAEP(cipherText string, privateKey *rsa.PrivateKey) (string, error) {
 	ct, _ := base64.StdEncoding.DecodeString(cipherText)
-	//label := []byte("OAEP Encrypted")
-
-	// crypto/rand.Reader is a good source of entropy for blinding the RSA
-	// operation.
 	rng := rand.Reader
-	plaintext, err := rsa.DecryptOAEP(sha256.New(), rng, privateKey, ct, nil)
+	plainText, err := rsa.DecryptOAEP(sha256.New(), rng, privateKey, ct, nil)
 	if err != nil {
 		return "", err
 	}
-	fmt.Printf("Plaintext: %s\n", string(plaintext))
+	fmt.Printf("plainText: %s\n", string(plainText))
 
-	return string(plaintext), nil
+	return string(plainText), nil
 }
 
 // 私钥签名
 func SignPKCS1v15(plaintext string, privateKey *rsa.PrivateKey) (string, error) {
-	// crypto/rand.Reader is a good source of entropy for blinding the RSA
-	// operation.
 	rng := rand.Reader
 	hashed := sha256.Sum256([]byte(plaintext))
 	signature, err := rsa.SignPKCS1v15(rng, privateKey, crypto.SHA256, hashed[:])
@@ -91,13 +82,12 @@ func RsaDecrypt(cipherText string, privateKey *rsa.PrivateKey) (string, error) {
 	}
 	return string(revData), nil
 }
+
 func ParsePrivateKey(privateKey []byte) (*rsa.PrivateKey, error) {
-	//var block *pem.Block
 	block, _ := pem.Decode(privateKey)
 	if block == nil {
 		return nil, errors.New("empty private key")
 	}
-
 	return x509.ParsePKCS1PrivateKey(block.Bytes)
 }
 
@@ -106,17 +96,5 @@ func ParsePublicKey(publicKey []byte) (*rsa.PublicKey, error) {
 	if block == nil {
 		return nil, errors.New("empty public key")
 	}
-
-	// openssl rsa -in pkcs1_private.pem -pubout -out rsa_public_key.pem
-	//pub, err := x509.ParsePKIXPublicKey(block.Bytes)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//v, ok := pub.(*rsa.PublicKey)
-	//if !ok {
-	//	return nil, errors.New("pub.(ed25519.PublicKey) error")
-	//}
-	//return v, nil
-
 	return x509.ParsePKCS1PublicKey(block.Bytes)
 }
