@@ -1,0 +1,7 @@
+.idea
+.DS_Store
+.classpath
+.project
+.arclint
+.arcconfig
+.vscode
