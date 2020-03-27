@@ -53,7 +53,7 @@ func VerifyPKCS1v15(signature string, plaintext string, publicKey *rsa.PublicKey
 	hashed := sha256.Sum256([]byte(plaintext))
 	err = rsa.VerifyPKCS1v15(publicKey, crypto.SHA256, hashed[:], sig)
 	if err != nil {
-		if errors.Is(err, rsa.ErrVerification) {
+		if err == rsa.ErrVerification {
 			return false, nil
 		}
 		return false, err
