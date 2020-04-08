@@ -70,6 +70,9 @@ func main() {
 				if err := producer.Publish(topicName, body); err != nil {
 					panic(err)
 				}
+				if err := producer.PublishDelayMsg(topicName, body, time.Second); err != nil {
+					panic(err)
+				}
 			}
 
 		}
