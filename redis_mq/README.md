@@ -9,3 +9,6 @@ blog: https://www.cnblogs.com/li-peng/p/12659222.html
 
 
 ## simple delay mq
+<p>
+<img src="delay_mq.png">
+</p>
